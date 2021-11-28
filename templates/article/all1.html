@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container {
+            border: 1px solid brown;
+            margin-bottom: 10px;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    {# 根据用户获取用户的所有文章 #}
+    {% for article in user.articles %}
+    <div id="container">
+        <p>
+        <h3>{{article.title}}</h3>
+        {# 根据文章找作者#}
+        <div>作者：{{user.username}}</div>
+        </p>
+        <p>
+            {{article.content}}
+        </p>
+        <div>{{article.pdatetime}}</div>
+    </div>
+    {% endfor %}
+</body>
+
+</html>

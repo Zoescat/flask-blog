@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}
+博客首页
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<style>
+  #container {
+    width: 1000px;
+    margin: 0 auto;
+  }
+
+  .article {
+    width: 100%;
+    margin: 15px auto;
+    padding: 5px 10px;
+    background-color: #fcfdfd;
+  }
+
+  .article p {
+    font-size: 14px;
+    color: rgba(80, 80, 79, 1.00);
+  }
+
+  .article h4 a:hover {
+    color: #13b7e9;
+  }
+
+  .article div span {
+    margin-left: 20px;
+  }
+
+  .article div {
+    margin-bottom: 18px;
+  }
+</style>
+{% endblock %}
+
+{% block newcontent %}
+<div id="container">
+  {% for article in pagination.items %}
+  <div class="article">
+    <h4><a href="{{url_for('article.article_detail')}}?aid={{article.id}}">{{article.title}}</a></h4>
+    <p>
+      <span>作者：{{article.user.username}}</span>
+      <br>
+      <br>
+    </p>
+    <div>{{article.content | safe}}</div>
+    <div>
+      <span style="margin-left: 0">发布时间：{{article.pdatetime}}</span>
+      <span>收藏：{{article.save_num}}<span>点击量：{{article.click_num}}</span><span>点赞量：{{article.love_num}}</span></span>
+    </div>
+  </div>
+  {% endfor %}
+
+  <nav aria-label="Page navigation" class="col-md-offset-5">
+    <ul class="pagination">
+      {# pagination.has_prev 判断是否存在上一页，如果存在则可以点击，否则不能点击#}
+      <li {% if not pagination.has_prev %} class="disabled" {% endif %}>
+        <a href="{{url_for('user.index')}}?page={{pagination.prev_num}}" aria-label="Previous"><span
+            aria-hidden="true">&laquo;</span></a>
+      </li>
+      {% for page_num in range(1,pagination.pages+1) %}
+      <li{% if pagination.page==page_num %} class="active" {% endif %}><a href="{{url_for('user.index')}}?page={{page_num}}&per_page={{pagination.per_page}}">{{page_num}}</a></li>
+      {% endfor%}
+      <!-- # pagination.has_next 判断是否存在下一页，如果存在则可以点击，否则不能点击 -->
+      <li {% if not pagination.has_next%} class="disabled" {% endif %}>
+        <a href="{{url_for('user.index')}}?page={{pagination.next_num}}&per_page={{pagination.per_page}}" aria-label="Next">
+          <span aria_hidden="true">&raquo;</span></a>
+      </li>
+    </ul>
+  </nav>
+</div>
+{% endblock %}

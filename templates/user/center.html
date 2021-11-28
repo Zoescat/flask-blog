@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}
+用户中心
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<style>
+    #container {
+        padding-top: 30px;
+        width: 1000px;
+        height: 600px;
+        margin: 0 auto;
+        margin-bottom: 50px;
+    }
+
+    #container div {
+        float: left;
+    }
+
+    #left {
+        width: 30%;
+        height: 600px;
+        background-color: #c0e3ee;
+    }
+
+    #left p {
+        width: 85%;
+        margin: 40px auto;
+        margin-top: 40px;
+        border: 1px solid #89e4f1;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 20px;
+        color: white;
+        padding: 10px;
+        cursor: default;
+        background-color: #9cdff5;
+        box-shadow: 5px 5px 5px #beecfd;
+    }
+
+
+    #left p:hover{
+        background-color: #9dd8f1;
+        box-shadow: #96dbf1;
+    }
+
+    #right {
+        width: 65%;
+        height: 600px;
+        background-color:  #c0e3ee;
+        ;
+        margin-left: 5px;
+    }
+
+    .right1 {
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        padding-top: 100px;
+    }
+
+    .right1 p {
+        margin: 20px auto;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block newcontent %}
+<div id="container">
+    <div id="left">
+        <p>用户信息修改</p>
+        <p>发表文章</p>
+        <p>管理相册</p>
+        <p>管理留言</p>
+        <p>关于我设置</p>
+    </div>
+    <div id="right">
+        <div class="right1">
+            <h2>用户信息修改</h2>
+            <form action="{{url_for('user.user_change')}}" method="post" enctype="multipart/form-data">
+                <p><input type="text" class="form control" id="inputUsername" name="username"
+                        value="{{g.user.username}}"></p>
+                <p><input type="text" class="form control" id="inputPhone" name="phone" value="{{g.user.phone}}"></p>
+                <span></span>
+                <p><input type="email" class="form control" id="inputEmail" name="email" value="{{g.user.email}}"></p>
+                <p><input type="file" id="exampleInputFile" name="icon" style="display: inline;"></p>
+                <p><img src="{% if g.user.icon %} {{url_for('static',filename=user.icon)}} {% else %} {{url_for('static',filename='images/head.png')}} {% endif %}"
+                        alt="" width="120" height="120"></p>
+                <p><button type="submit" class="btn btn primary">用户信息修改</button></p>
+            </form>
+        </div>
+        <div class="right1" style="padding-top: 20px;">
+            <form action="{{url_for('article.publish_article')}}" method="post">
+                <p><input type="text" class="form-control" id="InputTitle" name="title" placeholder="请输入文章标题"></p>
+                <p>
+                    <select name="type" class="form-control">
+                        <option value="0">请选择文章分类</option>
+                        {% for type in types %}
+                            <option value="{{ type.id }}">{{ type.type_name }}</option>
+                        {% endfor %}
+
+                    </select>
+                </p>
+                <p>
+                    <textarea name="content" class="mytextarea" ></textarea>
+                </p>
+                <p style="text-align: right;">
+                    <button type="submit" class="btn btn-primary">发表文章</button>
+                </p>
+            </form>
+
+        </div>
+        <div class="right1" style="background-color: #82d3f5;">管理相册</div>
+        <div class="right1" style="background-color: #8fd4f1;">管理留言</div>
+        <div class="right1" style="padding-top: 30px;">
+            <form action="{{url_for('user.user_change')}}" method="post" enctype="multipart/form-data">
+                <p>
+                    <textarea name="content" class="mytextarea" ></textarea>
+                </p>
+                <p></p>
+                <p style="text-align: right;">
+                    <button type="submit" class="btn btn-primary">更改我的</button>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script src="{{ url_for('static',filename='tinymce/tinymce.min.js') }}"></script>
+<script>
+    $(function () {
+        // 设置富文本
+        tinymce.init({
+            selector: '.mytextarea',
+            height: 400,
+            plugins: "quickbars emoticons",
+            inline: false,
+            toolbar: true,
+            menubar: true,
+            quickbars_selection_toolbar: 'bold italic | link h2 h3 blockquote',
+            quickbars_insert_toolbar: 'quickimage quicktable',
+        });
+        // 验证手机号码
+        $('#InputPhone').blur(function () {
+            let phone = $(this).val();
+            let span_ele = $(this).next('span');
+            if (phone.length == 11) {
+                span_ele.text('');
+                $.get("{{url_for('user.check_phone')}}", { phone: phone }, function (data) {
+                    console.log('----data',data)
+                    if (data.code != 200) {
+                        span_ele.css({ "color": "red", "font-size": "12px" });
+                        span_ele.text(data.msg);
+                    }
+                })
+            } else {
+                span_ele.css({ "color": "red", "font-size": "12px" });
+                span_ele.text('手机格式错误');
+            }
+        });
+
+        $('.right1').hide();
+        $('.right1').eq(0).show();
+        $('#left p').first().css({ 'background-color': '#39bfec' }); 
+        // 切换右侧的div
+        $('#left p').each(function (i) {
+            $(this).click(function () {
+                console.log('i=',i)
+                $('#left p').css({ 'background-color': '#c2e4f3' });  
+                $(this).css({ 'background-color': 'skyblue', 'box-shadow': '5px 5px 5px deepskylue' });
+                $('.right1').hide();
+                $('.right1').eq(i).show();
+            });
+        });
+
+    })
+
+</script>
+{% endblock %}
