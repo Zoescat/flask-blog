@@ -113,7 +113,26 @@
             </form>
 
         </div>
-        <div class="right1" style="background-color: #82d3f5;">管理相册</div>
+        <div class="right1" style="background-color: #82d3f5;">
+            <form action="{{url_for('user.upload_photo')}}" method="post" enctype="multipart/form-data" class="form-inline">
+                <input type="file" name="photo" class="form-contral">
+                <input type="submit" value="上传相册" class="btn btn-default">
+            </form>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>我的相册</h3>
+                    <div class="row">
+                        {% for photo in photos %}
+                            <div class="col-xs-8 col-sm-4">
+                                <img src="http://zoe-blog.oook.fun/{{photo.photo_name}}" alt="" class="img-rounded image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            
+            管理相册</div>
         <div class="right1" style="background-color: #8fd4f1;">管理留言</div>
         <div class="right1" style="padding-top: 30px;">
             <form action="{{url_for('user.user_change')}}" method="post" enctype="multipart/form-data">

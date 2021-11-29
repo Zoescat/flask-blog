@@ -5,17 +5,19 @@ from flask_sqlalchemy import Pagination
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.wrappers import response
 from apps.article.models import Article, Article_type
-from apps.user.models import User
+from apps.user.models import User, Photo
 from apps.user.smssend import SmsSendAPIDemo
 from exts import db
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 from settings import Config
 from pathlib import PurePath, PurePosixPath
+from apps.utils.util import upload_qiniu_photo
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
-required_login_list = ['/user/center', '/user/change', '/article/publish']
+required_login_list = ['/user/center', '/user/change',
+                       '/article/publish', '/user/upload_photo']
 
 
 # flask钩子函数
@@ -71,7 +73,7 @@ def index():
     # 获取文章列表
     pagination = Article.query.order_by(
         -Article.pdatetime).paginate(page=page, per_page=per_page)
-    print(pagination.items)   
+    print(pagination.items)
     print(pagination.page)   # 当前的页码数
     print(pagination.prev_num)   # 当前页的前一个页码数
     print(pagination.next_num)   # 当前页的后一个页码数
@@ -294,6 +296,24 @@ def publish_article():
         print(content)
         return render_template('article/test.html', content=content)
     return '发表失败'
+
+
+# 上传照片
+@user_bp.route('/upload_photo', methods=['GET', 'POST'])
+def upload_photo():
+    # 获取上传的内容
+    photo = request.files.get('photo')
+    # 工具模块中封装方法
+    ret, info = upload_qiniu_photo(photo)
+    if info.status_code == 200:
+        photo = Photo()
+        photo.photo_name = ret['key']
+        photo.user_id = g.user.id
+        db.session.add(photo)
+        db.session.commit()
+        return '上传成功 '
+    else:
+        return '上传失败'
 
 
 # 退出
