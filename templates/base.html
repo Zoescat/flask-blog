@@ -51,8 +51,7 @@
                 {% if user %}
                 <li><img
                     src="{% if user.icon %}  {{ url_for('static',filename=user.icon) }} {% else %}{{ url_for('static',filename='images/head.png') }}{% endif %}"
-                    alt="" width="30"
-                    height="30" style="border-radius: 15px;margin-top: 8px"></li>
+                    alt="" style="border-radius: 15px;margin-top: 8px; width: 30px; height: 30px; "></li>
                 <li class="dropdown">
 
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"

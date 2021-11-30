@@ -232,7 +232,8 @@ def user_center():
     print('----->', g.user.__dict__)
     types = Article_type.query.all()
     print('types=', types)
-    return render_template('user/center.html', user=g.user, types=types)
+    photos=Photo.query.filter(Photo.user_id==g.user.id).all()
+    return render_template('user/center.html', user=g.user, types=types,photos=photos)
 
 
 # 图片的扩展名
@@ -314,6 +315,22 @@ def upload_photo():
         return '上传成功 '
     else:
         return '上传失败'
+
+
+
+
+# 我的相册
+@user_bp.route('/myphoto')
+def myphoto():
+    page=int(request.args.get('page',1))
+    # 分页展示
+    photos=Photo.query.paginate(page=page,per_page=5)
+    user_id=session['uid']
+    user=None
+    if user_id:
+        user=User.query.get(user_id)
+    return render_template('user/myphoto.html',photos=photos,user=user)
+
 
 
 # 退出

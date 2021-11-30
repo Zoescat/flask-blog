@@ -40,7 +40,7 @@
     }
 
 
-    #left p:hover{
+    #left p:hover {
         background-color: #9dd8f1;
         box-shadow: #96dbf1;
     }
@@ -48,7 +48,7 @@
     #right {
         width: 65%;
         height: 600px;
-        background-color:  #c0e3ee;
+        background-color: #c0e3ee;
         ;
         margin-left: 5px;
     }
@@ -64,6 +64,12 @@
         margin: 20px auto;
     }
 
+    .image {
+        width: 100px;
+        height: 100px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 </style>
 {% endblock %}
 
@@ -99,13 +105,13 @@
                     <select name="type" class="form-control">
                         <option value="0">请选择文章分类</option>
                         {% for type in types %}
-                            <option value="{{ type.id }}">{{ type.type_name }}</option>
+                        <option value="{{ type.id }}">{{ type.type_name }}</option>
                         {% endfor %}
 
                     </select>
                 </p>
                 <p>
-                    <textarea name="content" class="mytextarea" ></textarea>
+                    <textarea name="content" class="mytextarea"></textarea>
                 </p>
                 <p style="text-align: right;">
                     <button type="submit" class="btn btn-primary">发表文章</button>
@@ -113,8 +119,9 @@
             </form>
 
         </div>
-        <div class="right1" style="background-color: #82d3f5;">
-            <form action="{{url_for('user.upload_photo')}}" method="post" enctype="multipart/form-data" class="form-inline">
+        <div class="right1" style="background-color: #cfeef5;">
+            <form action="{{url_for('user.upload_photo')}}" method="post" enctype="multipart/form-data"
+                class="form-inline">
                 <input type="file" name="photo" class="form-contral">
                 <input type="submit" value="上传相册" class="btn btn-default">
             </form>
@@ -123,21 +130,19 @@
                     <h3>我的相册</h3>
                     <div class="row">
                         {% for photo in photos %}
-                            <div class="col-xs-8 col-sm-4">
-                                <img src="http://zoe-blog.oook.fun/{{photo.photo_name}}" alt="" class="img-rounded image">
-                            </div>
+                        <div class="col-xs-8 col-sm-4">
+                            <img src="http://zoe-blog.oook.fun/{{photo.photo_name}}" alt="" class="img-rounded image">
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            
-            
-            管理相册</div>
+        </div>
         <div class="right1" style="background-color: #8fd4f1;">管理留言</div>
         <div class="right1" style="padding-top: 30px;">
             <form action="{{url_for('user.user_change')}}" method="post" enctype="multipart/form-data">
                 <p>
-                    <textarea name="content" class="mytextarea" ></textarea>
+                    <textarea name="content" class="mytextarea"></textarea>
                 </p>
                 <p></p>
                 <p style="text-align: right;">
@@ -172,7 +177,7 @@
             if (phone.length == 11) {
                 span_ele.text('');
                 $.get("{{url_for('user.check_phone')}}", { phone: phone }, function (data) {
-                    console.log('----data',data)
+                    console.log('----data', data)
                     if (data.code != 200) {
                         span_ele.css({ "color": "red", "font-size": "12px" });
                         span_ele.text(data.msg);
@@ -186,12 +191,12 @@
 
         $('.right1').hide();
         $('.right1').eq(0).show();
-        $('#left p').first().css({ 'background-color': '#39bfec' }); 
+        $('#left p').first().css({ 'background-color': '#39bfec' });
         // 切换右侧的div
         $('#left p').each(function (i) {
             $(this).click(function () {
-                console.log('i=',i)
-                $('#left p').css({ 'background-color': '#c2e4f3' });  
+                console.log('i=', i)
+                $('#left p').css({ 'background-color': '#c2e4f3' });
                 $(this).css({ 'background-color': 'skyblue', 'box-shadow': '5px 5px 5px deepskylue' });
                 $('.right1').hide();
                 $('.right1').eq(i).show();
