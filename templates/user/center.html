@@ -132,6 +132,7 @@
                         {% for photo in photos %}
                         <div class="col-xs-8 col-sm-4">
                             <img src="http://zoe-blog.oook.fun/{{photo.photo_name}}" alt="" class="img-rounded image">
+                            <button class="btn btn-info btn-xs photo-del" tag="{{ photo.id }}">删除</button>
                         </div>
                         {% endfor %}
                     </div>
@@ -201,6 +202,17 @@
                 $('.right1').hide();
                 $('.right1').eq(i).show();
             });
+        });
+        // 相册图片的删除
+        $('.photo-del').click(function(){
+            console.log('---->')
+            flag=confirm('确定删除此图片吗？');
+            if (flag){
+                // 获取属性值tag，tag属性的值就是图片的主键
+                let pid=$(this).attr('tag');
+                //location.href
+                location.href='/user/photo_del?pid='+pid;
+            }
         });
 
     })

@@ -312,7 +312,7 @@ def upload_photo():
         photo.user_id = g.user.id
         db.session.add(photo)
         db.session.commit()
-        return '上传成功 '
+        return redirect(url_for('user.user_center'))
     else:
         return '上传失败'
 
