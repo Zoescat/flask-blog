@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import os
 from settings import Config
 from pathlib import PurePath, PurePosixPath
-from apps.utils.util import upload_qiniu_photo
+from apps.utils.util import upload_qiniu_photo,delete_qiniu
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -332,7 +332,32 @@ def myphoto():
     return render_template('user/myphoto.html',photos=photos,user=user)
 
 
+# 删除相册图片
+@user_bp.route('/photo_delete')
+def photo_delete():
+    pid=request.args.get('pid')
+    photo=Photo.query.get(pid)
+    filename=photo.photo_name
+    # 封装好的一个删除七牛存储文件的函数
+    info=delete_qiniu(filename)
+    if info.status_code==200:
+        # 删除数据库内容
+        db.session.delete(photo)
+        db.session.commit()
+        return redirect(url_for('user.user_center'))
+    else:
+        return render_template('500.html',err_msg='删除相册图片失败！')
 
+
+
+# 删除失败500页面
+@user_bp.route('/error')
+def test_error():
+    referer=request.headers.get('Referer',None)
+    return render_template('500.html',err_msg='删除出现错误啦！',referer=referer)
+    
+    
+    
 # 退出
 @user_bp.route('/logout', methods=['GET', 'POST'])
 def logout():

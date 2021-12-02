@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误提示</title>
+</head>
+<body>
+    <p>{{err_msg}}</p>
+    <a href="{% if referer %} {{ referer }} {% else %} {{url_for('user.index')}} {% endif %}">返回上一页</a>
+</body>
+</html>
