@@ -16,8 +16,11 @@ from apps.utils.util import upload_qiniu_photo,delete_qiniu
 
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
-required_login_list = ['/user/center', '/user/change',
-                       '/article/publish', '/user/upload_photo']
+required_login_list = ['/user/center', 
+                       '/user/change',
+                       '/article/publish',
+                       '/user/upload_photo',
+                       '/article/add_comment']
 
 
 # flask钩子函数
@@ -325,7 +328,7 @@ def myphoto():
     page=int(request.args.get('page',1))
     # 分页展示
     photos=Photo.query.paginate(page=page,per_page=5)
-    user_id=session['uid']
+    user_id=session.get('uid',None)
     user=None
     if user_id:
         user=User.query.get(user_id)

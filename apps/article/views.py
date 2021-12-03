@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify, session
 from apps.user.models import User
-from apps.article.models import Article, Article_type
+from apps.article.models import Article, Article_type, Comment
 from exts import db
 import flask
 
@@ -22,7 +22,7 @@ def publish_article():
         title = request.form.get('title')
         content = request.form.get('content')
         type_id = request.form.get('type')
-        print('content=',content)
+        print('content=', content)
         # 添加文章
         article = Article()
         article.title = title
@@ -33,10 +33,9 @@ def publish_article():
         db.session.add(article)
         db.session.commit()
         return redirect(url_for('user.index'))
-  
 
 
-# 文章明细
+# 文章详情
 @article_bp.route('/detail')
 def article_detail():
     # 通过id获取文章对象
@@ -44,8 +43,19 @@ def article_detail():
     article = Article.query.get(article_id)
     # 获取文章分类
     types = Article_type.query.all()
-    print('types=',types)
-    return render_template('article/detail.html', article=article, types=types)
+    print('types=', types)
+    # 登录用户
+    user = None
+    user_id = session.get('uid', None)
+    if user_id:
+        user = User.query.get(user_id)
+    # 单独查询评论
+    page = int(request.args.get('page', 1))
+    comments = Comment.query.filter(Comment.article_id == article_id)\
+        .order_by(-Comment.cdatetime)\
+        .paginate(page=page, per_page=5)
+
+    return render_template('article/detail.html', article=article, types=types, user=user, comments=comments)
 
 
 # 文章点赞数
@@ -55,10 +65,29 @@ def article_love():
     article_id = request.args.get('aid')
     tag = request.args.get('tag')
     article = Article.query.get(article_id)
-    print('tag=',tag)
+    print('tag=', tag)
     if tag == '1':
         article.love_num -= 1
     else:
         article.love_num += 1
     db.session.commit()
     return jsonify(num=article.love_num)
+
+
+# 文章评论
+@article_bp.route('/add_comment', methods=['GET', 'POST'])
+def article_comment():
+    if request.method == 'POST':
+        comment_content = request.form.get('comment')
+        user_id = g.user.id
+        article_id = request.form.get('aid')
+        # 评论模型
+        comment = Comment()
+        comment.comment = comment_content
+        comment.user_id = user_id
+        comment.article_id = article_id
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('article.article_detail')+"?aid="+article_id)
+
+    return redirect(url_for('user.index'))
