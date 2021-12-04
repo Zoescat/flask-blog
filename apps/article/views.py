@@ -22,14 +22,14 @@ def publish_article():
         title = request.form.get('title')
         content = request.form.get('content')
         type_id = request.form.get('type')
-        print('content=', content)
+        # print('content=', content)
         # 添加文章
         article = Article()
         article.title = title
         article.content = content
         article.type_id = type_id
         article.user_id = g.user.id
-        print(article.__dict__)
+        # print(article.__dict__)
         db.session.add(article)
         db.session.commit()
         return redirect(url_for('user.index'))
@@ -43,7 +43,7 @@ def article_detail():
     article = Article.query.get(article_id)
     # 获取文章分类
     types = Article_type.query.all()
-    print('types=', types)
+    # print('types=', types)
     # 登录用户
     user = None
     user_id = session.get('uid', None)
@@ -65,7 +65,7 @@ def article_love():
     article_id = request.args.get('aid')
     tag = request.args.get('tag')
     article = Article.query.get(article_id)
-    print('tag=', tag)
+    # print('tag=', tag)
     if tag == '1':
         article.love_num -= 1
     else:

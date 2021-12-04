@@ -69,7 +69,7 @@ def teardown_request_test(response):
 @user_bp.route('/')
 def index():
     # 1.cookie的获取方式
-    uid = request.cookies.get('uid', None)
+    # uid = request.cookies.get('uid', None)
     # 接收页码数
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 5))
@@ -87,7 +87,7 @@ def index():
     # 获取分类列表
     types = Article_type.query.all()
     # 2.session的获取方式
-    # uid = session.get('uid')
+    uid = session.get('uid')
     # 判断用户是否登录
     if uid:
         user = User.query.get(uid)
@@ -157,12 +157,12 @@ def login():
                 print(f'====>user {user} - flag {flag}')
                 if flag:
                     # 1.cookie实现机制
-                    response = redirect(url_for('user.index'))
-                    response.set_cookie('uid', str(user.id), max_age=1800)
-                    return response
+                    # response = redirect(url_for('user.index'))
+                    # response.set_cookie('uid', str(user.id), max_age=1800)
+                    # return response
                     # 2.session实现机制,session当成字典使用
-                    # session['uid'] = user.id
-                    # return redirect(url_for('user.index'))
+                    session['uid'] = user.id
+                    return redirect(url_for('user.index'))
         # 2.手机号码与验证码的登录
         elif f == '2':
             code = request.form.get('code')

@@ -17,6 +17,7 @@ class User(db.Model):
     rdatetime = db.Column(db.DateTime, default=datetime.now)
     # 增加一个字段articles
     articles = db.relationship('Article', backref='user')  # backref 反向引用
+    comments = db.relationship('Comment', backref='user')
 
     def __str__(self):
         return self.username
