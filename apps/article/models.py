@@ -14,7 +14,7 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    pdatetime = db.Column(db.DateTime, default=datetime.now)
+    pdatetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
     click_num = db.Column(db.Integer, default=0)
     saveclick_num = db.Column(db.Integer, default=0)
     love_num = db.Column(db.Integer, default=0)
@@ -22,7 +22,7 @@ class Article(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('article_type.id'), nullable=False)
     comments=db.relationship('Comment',backref='acticle')
-
+    
 
 # 评论
 class Comment(db.Model):
@@ -34,7 +34,7 @@ class Comment(db.Model):
     comment = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
-    cdatetime = db.Column(db.DateTime, default=datetime.now)
+    cdatetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
 
     def __str__(self):
         return self.comment

@@ -36,8 +36,8 @@
             <li class="previous {% if not photos.has_prev %}disable{% endif %}">
                 <a href="{{url_for('user.myphoto')}}?page={{photos.prev_num}}"><span aria-hidden='true'>&larr;</span>上一页</a>
             </li>
-            <li class="previous {% if not photos.has_next %}disable{% endif %}">
-                <a href="{{url_for('user.myphoto')}}?page={{photos.next_num}}"><span aria-hidden='true'>&larr;</span>下一页</a>
+            <li class="next {% if not photos.has_next %}disable{% endif %}">
+                <a href="{{url_for('user.myphoto')}}?page={{photos.next_num}}"><span aria-hidden='true'>&rarr;</span>下一页</a>
             </li>
         </ul>
     </nav>

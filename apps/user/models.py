@@ -1,5 +1,6 @@
 # ORM 类--->表
 # 类对象--->表中的一条数据
+from sqlalchemy.orm import backref
 from exts import db
 from datetime import datetime
 
@@ -28,8 +29,20 @@ class User(db.Model):
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     photo_name = db.Column(db.String(80), nullable=False)
-    photo_datetime = db.Column(db.DateTime, default=datetime.now)
+    photo_datetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
 
 def __str__(self):
     return self.photo_name
+
+
+# "关于我"模型
+class AboutMe(db.Model):
+    __table_args__ = {'mysql_engine' : 'InnoDB', 'mysql_charset' : 'utf8mb4'}
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text, nullable=False)
+    pdatetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
+    # 要与用户简历练习
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    # 已知用户找关于
+    user=db.relationship('User',backref='about')

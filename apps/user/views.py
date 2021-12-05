@@ -5,7 +5,7 @@ from flask_sqlalchemy import Pagination
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.wrappers import response
 from apps.article.models import Article, Article_type
-from apps.user.models import User, Photo
+from apps.user.models import AboutMe, User, Photo
 from apps.user.smssend import SmsSendAPIDemo
 from exts import db
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -20,7 +20,9 @@ required_login_list = ['/user/center',
                        '/user/change',
                        '/article/publish',
                        '/user/upload_photo',
-                       '/article/add_comment']
+                       '/article/add_comment',
+                       '/user/about_me'
+                       ]
 
 
 # flask钩子函数
@@ -76,14 +78,14 @@ def index():
     # 获取文章列表
     pagination = Article.query.order_by(
         -Article.pdatetime).paginate(page=page, per_page=per_page)
-    print(pagination.items)
-    print(pagination.page)   # 当前的页码数
-    print(pagination.prev_num)   # 当前页的前一个页码数
-    print(pagination.next_num)   # 当前页的后一个页码数
-    print(pagination.has_next)  # True
-    print(pagination.has_prev)  # True
-    print(pagination.pages)   # 总共有几页
-    print(pagination.total)   # 总的记录tiaoshu
+    # print(pagination.items)
+    # print(pagination.page)   # 当前的页码数
+    # print(pagination.prev_num)   # 当前页的前一个页码数
+    # print(pagination.next_num)   # 当前页的后一个页码数
+    # print(pagination.has_next)  # True
+    # print(pagination.has_prev)  # True
+    # print(pagination.pages)   # 总共有几页
+    # print(pagination.total)   # 总的记录tiaoshu
     # 获取分类列表
     types = Article_type.query.all()
     # 2.session的获取方式
@@ -147,8 +149,8 @@ def login():
         if f == '1':
             username = request.form.get('username')
             password = request.form.get('password')
-            print('---->username是', username)
-            print('---->password是', password)
+            # print('---->username是', username)
+            # print('---->password是', password)
             users = User.query.filter(User.username == username).all()
             print(f'len(users) = {len(users)}')
             for user in users:
@@ -320,11 +322,10 @@ def upload_photo():
         return '上传失败'
 
 
-
-
 # 我的相册
 @user_bp.route('/myphoto')
 def myphoto():
+    # 如果不转成整型，默认是str类型
     page=int(request.args.get('page',1))
     # 分页展示
     photos=Photo.query.paginate(page=page,per_page=5)
@@ -350,8 +351,25 @@ def photo_delete():
         return redirect(url_for('user.user_center'))
     else:
         return render_template('500.html',err_msg='删除相册图片失败！')
+    
+    
+# aboutme 关于用户介绍添加
+@user_bp.route('/about_me',methods=['GET','POST'])  
+def about_me():
+    if request.method=="POST":
+        content=request.form.get('about')
+        print('--->',content)
+        # 添加信息
+        aboutme=AboutMe()
+        aboutme.content=content
+        aboutme.user_id=g.user.id
+        db.session.add(aboutme)
+        db.session.commit()
+        return render_template('user/aboutme.html',user=g.user)
+    return render_template('user/aboutme.html',user=g.user)
 
 
+    
 
 # 删除失败500页面
 @user_bp.route('/error')
