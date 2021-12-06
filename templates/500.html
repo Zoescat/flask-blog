@@ -8,6 +8,6 @@
 </head>
 <body>
     <p>{{err_msg}}</p>
-    <a href="{% if referer %} {{ referer }} {% else %} {{url_for('user.index')}} {% endif %}">返回上一页</a>
+    <a href="{% if referer %} {{ referer }} {% else %} {{url_for('index.index')}} {% endif %}">返回上一页</a>
 </body>
 </html>

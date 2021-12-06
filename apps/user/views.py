@@ -14,6 +14,7 @@ from settings import Config
 from pathlib import PurePath, PurePosixPath
 from apps.utils.util import upload_qiniu_photo,delete_qiniu
 
+index_bp = Blueprint('index', __name__)
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 required_login_list = ['/user/center', 
@@ -69,7 +70,7 @@ def teardown_request_test(response):
 
 
 # 首页
-@user_bp.route('/')
+@index_bp.route('/')
 def index():
     # 1.cookie的获取方式
     # uid = request.cookies.get('uid', None)
@@ -123,7 +124,7 @@ def register():
             # 4.提交数据
             db.session.commit()
             # 重定向到用户中心
-            return redirect(url_for('user.index'))
+            return redirect(url_for('index.index'))
         else:
             return '两次密码不一致'
     return render_template('user/register.html')
@@ -160,12 +161,12 @@ def login():
                 print(f'====>user {user} - flag {flag}')
                 if flag:
                     # 1.cookie实现机制
-                    # response = redirect(url_for('user.index'))
+                    # response = redirect(url_for('index.index'))
                     # response.set_cookie('uid', str(user.id), max_age=1800)
                     # return response
                     # 2.session实现机制,session当成字典使用
                     session['uid'] = user.id
-                    return redirect(url_for('user.index'))
+                    return redirect(url_for('index.index'))
         # 2.手机号码与验证码的登录
         elif f == '2':
             code = request.form.get('code')
@@ -182,7 +183,7 @@ def login():
                 if user:
                     # 登录成功
                     session['uid'] = user.id
-                    return redirect(url_for('user.index'))
+                    return redirect(url_for('index.index'))
                 else:
                     print('此号码未注册', phone)
                     return render_template('user/login.html', msg='此号码未注册')
@@ -429,7 +430,7 @@ def test_error():
 @user_bp.route('/logout', methods=['GET', 'POST'])
 def logout():
     # 1.cookie的方式
-    response = redirect(url_for('user.index'))
+    response = redirect(url_for('index.index'))
     # 通过response对象的delete_cookie(key),key就是删除的cookie的key
     response.delete_cookie('uid')
     # 2.session的方式

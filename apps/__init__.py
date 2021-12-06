@@ -1,7 +1,7 @@
 from flask import Flask
 import settings
 from exts import db,bootstrap
-from apps.user.views import user_bp
+from apps.user.views import user_bp,index_bp
 from apps.article.views import article_bp
 
 
@@ -19,6 +19,7 @@ def create_app():
     # 蓝图 是路由的另外一种表示方式
     # 将蓝图对象绑定到app上
     app.register_blueprint(user_bp)
+    app.register_blueprint(index_bp)
     app.register_blueprint(article_bp)
 
     # print(app.url_map)

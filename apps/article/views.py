@@ -32,7 +32,7 @@ def publish_article():
         # print(article.__dict__)
         db.session.add(article)
         db.session.commit()
-        return redirect(url_for('user.index'))
+        return redirect(url_for('index.index'))
 
 
 # 文章详情
@@ -90,4 +90,4 @@ def article_comment():
         db.session.commit()
         return redirect(url_for('article.article_detail')+"?aid="+article_id)
 
-    return redirect(url_for('user.index'))
+    return redirect(url_for('index.index'))
