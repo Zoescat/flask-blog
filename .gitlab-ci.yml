@@ -2,21 +2,20 @@ variables:
   # 生成的镜像名称, 版本以此次提交的版本号
   IMAGE: flaskblog:${CI_COMMIT_SHORT_SHA}
 
-build:
-  # 使用官方的 docker 镜像进行构建和推送镜像操作
+# build:
+#   image: python:3.9
+#   stage: build
+#   script:
+#     - pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+#   only:
+#     # 只在主分支执行此任务
+#     - main
+
+deploy:
   image: python:3.9
-  stage: build
+  stage: deploy
   script:
     - pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
     - python app.py runserver --host 0.0.0.0 --port 8100
   only:
-    # 只在主分支执行此任务
     - main
-
-# deploy:
-#   # 基于官方的 docker 镜像安装 kubectl 操作集群
-#   stage: deploy
-#   script:
-#     - python app.py runserver --host 0.0.0.0 --port 8100
-#   only:
-#     - main
