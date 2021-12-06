@@ -1,5 +1,6 @@
 # ORM 类--->表
 # 类对象--->表中的一条数据
+from enum import unique
 from sqlalchemy.orm import backref
 from exts import db
 from datetime import datetime
@@ -42,7 +43,17 @@ class AboutMe(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.Text, nullable=False)
     pdatetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
-    # 要与用户简历练习
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    # 要与用户建立联系
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False,unique=True)
     # 已知用户找关于
     user=db.relationship('User',backref='about')
+
+
+# 留言板模型
+class MessageBoard(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.String(255), nullable=False)
+    mdatetime = db.Column(db.DateTime, default=datetime.now,nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # 关系：
+    user = db.relationship('User',backref='messages')

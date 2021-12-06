@@ -8,7 +8,7 @@ class Config:
     # 
     # mysql+pymysql://username:password@hostip:port/databasename
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://zoe_learn_sql:Hello_11@oook.fun:3306/zoe_flask_blog'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.50.160:3306/zoe_flask_blog?charset=utf8mb4'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@192.168.50.7:3306/zoe_flask_blog?charset=utf8mb4'
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     SQLALCHEMY_ECHO=True
     # session的secret_key

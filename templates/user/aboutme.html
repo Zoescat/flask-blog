@@ -12,7 +12,6 @@
   }
   #container p{
     width: 80%;
-    background-color: lavender;
   }
 
   
@@ -23,9 +22,9 @@
 <div id="container">
   <p>
       {% if not user.about %}
-        请在用户中心设置更多关于我的信息
+        请在个人中心设置更多关于我的信息
        {% else %}
-       {{user.about[0].content | content | safe }}
+       {{user.about[0].content | safe }}
        {% endif %}
   </p>
 </div>

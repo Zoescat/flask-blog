@@ -38,8 +38,8 @@
                     </ul>
                 </li>
                 <li><a href="{{ url_for('user.myphoto') }}">我的相册</a></li>
-                <li><a href="#">留言板</a></li>
-                <li><a href="{{ url_for('user.about_me') }}">关于我</a></li>
+                <li><a href="{{url_for('user.show_board')}}">留言板</a></li>
+                <li><a href="{{ url_for('user.show_about') }}">关于我</a></li>
                 <li><a href="#">友情链接</a></li>  
             </ul>
             <form class="navbar-form navbar-left">
@@ -58,7 +58,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                         aria-expanded="false">欢迎！{{user.username}} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">用户中心</a></li>
+                        <li><a href="{{url_for('user.user_center')}}">用户中心</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{url_for('user.logout')}}">退出</a></li>
                     </ul>
@@ -79,6 +79,4 @@
 {% block newcontent %}
 <h1>Hello, Bootstrap</h1>
 {% endblock %}
-
-
 {% endblock %}
