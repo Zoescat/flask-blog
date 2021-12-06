@@ -16,6 +16,6 @@ deploy:
   # 基于官方的 docker 镜像安装 kubectl 操作集群
   stage: deploy
   script:
-    - python3 app.py runserver --host 0.0.0.0 --port 8100
+    - python app.py runserver --host 0.0.0.0 --port 8100
   only:
     - main
