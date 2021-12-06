@@ -8,14 +8,12 @@ build:
   stage: build
   script:
     - docker build . -f Dockerfile -t ${IMAGE}
-    - docker push ${IMAGE}
   only:
     # 只在主分支执行此任务
     - main
 
 deploy:
   # 基于官方的 docker 镜像安装 kubectl 操作集群
-  image: docker:19.03-k8s
   stage: deploy
   script:
     - docker run -it --rm -p 5000:5000 ${IMAGE}
