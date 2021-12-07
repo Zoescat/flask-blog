@@ -5,8 +5,8 @@ build_image:
   # stage: build
   script:
     - docker build . -t flaskblog
-    - docker stop flaskblog
-    - docker run -itd --rm -p 5000:5000 --name flaskblog flaskblog
+    - if [ $(docker ps -aq --filter name= flaskblog) ]; then docker rm -f flaskblog;fi
+    - docker run -itd -p 5000:5000 --name flaskblog flaskblog
   only:
     # 只在主分支执行此任务
     - main
