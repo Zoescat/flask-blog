@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 import random
+
+from sqlalchemy.orm import session
+from apps.article.models import Article, Article_type
+from apps.user.models import User
 from qiniu import Auth, put_file, etag,put_data,BucketManager
 
 
@@ -52,3 +56,14 @@ def delete_qiniu(filename):
     key = filename
     ret,info=bucket.delete(bucket_name,key)
     return info
+
+
+# 文章分类
+def user_type():
+    types=Article_type.query.all()
+    # 登录用户
+    user=None
+    user_id=session.get('uid',None)
+    if user_id:
+        user=User.query.get(user_id)
+    return user,types

@@ -5,19 +5,19 @@ from flask_sqlalchemy import Pagination
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.wrappers import response
 from apps.article.models import Article, Article_type
-from apps.user.models import AboutMe, User, Photo,MessageBoard
+from apps.user.models import AboutMe, User, Photo, MessageBoard
 from apps.user.smssend import SmsSendAPIDemo
 from exts import db
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 from settings import Config
 from pathlib import PurePath, PurePosixPath
-from apps.utils.util import upload_qiniu_photo,delete_qiniu
+from apps.utils.util import upload_qiniu_photo, delete_qiniu
 
 index_bp = Blueprint('index', __name__)
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
-required_login_list = ['/user/center', 
+required_login_list = ['/user/center',
                        '/user/change',
                        '/article/publish',
                        '/user/upload_photo',
@@ -239,8 +239,8 @@ def user_center():
     print('----->', g.user.__dict__)
     types = Article_type.query.all()
     print('types=', types)
-    photos=Photo.query.filter(Photo.user_id==g.user.id).all()
-    return render_template('user/center.html', user=g.user, types=types,photos=photos)
+    photos = Photo.query.filter(Photo.user_id == g.user.id).all()
+    return render_template('user/center.html', user=g.user, types=types, photos=photos)
 
 
 # 图片的扩展名
@@ -328,104 +328,104 @@ def upload_photo():
 @user_bp.route('/myphoto')
 def myphoto():
     # 如果不转成整型，默认是str类型
-    page=int(request.args.get('page',1))
+    page = int(request.args.get('page', 1))
     # 分页展示
-    photos=Photo.query.paginate(page=page,per_page=5)
-    user_id=session.get('uid',None)
-    user=None
+    photos = Photo.query.paginate(page=page, per_page=5)
+    user_id = session.get('uid', None)
+    user = None
     if user_id:
-        user=User.query.get(user_id)
-    return render_template('user/myphoto.html',photos=photos,user=user)
+        user = User.query.get(user_id)
+    return render_template('user/myphoto.html', photos=photos, user=user)
 
 
 # 删除相册图片
 @user_bp.route('/photo_delete')
 def photo_delete():
-    pid=request.args.get('pid')
-    photo=Photo.query.get(pid)
-    filename=photo.photo_name
+    pid = request.args.get('pid')
+    photo = Photo.query.get(pid)
+    filename = photo.photo_name
     # 封装好的一个删除七牛存储文件的函数
-    info=delete_qiniu(filename)
-    if info.status_code==200:
+    info = delete_qiniu(filename)
+    if info.status_code == 200:
         # 删除数据库内容
         db.session.delete(photo)
         db.session.commit()
         return redirect(url_for('user.user_center'))
     else:
-        return render_template('500.html',err_msg='删除相册图片失败！')
-    
-    
+        return render_template('500.html', err_msg='删除相册图片失败！')
+
+
 # aboutme 关于用户介绍添加
-@user_bp.route('/about_me',methods=['POST'])  
+@user_bp.route('/about_me', methods=['POST'])
 def about_me():
-    content=request.form.get('about')
+    content = request.form.get('about')
     # 添加信息
     try:
-        aboutme=AboutMe()
-        aboutme.content=content
-        aboutme.user_id=g.user.id
+        aboutme = AboutMe()
+        aboutme.content = content
+        aboutme.user_id = g.user.id
         db.session.add(aboutme)
         db.session.commit()
     except Exception as err:
-        print('about更新错误：',err)
-        return render_template('user/aboutme.html',user=g.user)
+        print('about更新错误：', err)
+        return render_template('user/aboutme.html', user=g.user)
     else:
-        return render_template('user/aboutme.html',user=g.user)
+        return render_template('user/aboutme.html', user=g.user)
 
 
 # 展示关于我
-@user_bp.route('/showabout')    
+@user_bp.route('/showabout')
 def show_about():
-    return render_template('user/aboutme.html',user=g.user)
+    return render_template('user/aboutme.html', user=g.user)
 
 
 # 留言板
-@user_bp.route('/board',methods=['GET','POST'])
+@user_bp.route('/board', methods=['GET', 'POST'])
 def show_board():
     # 获取登录用户信息
-    uid=session.get('uid',None)
-    user=None
+    uid = session.get('uid', None)
+    user = None
     if uid:
-        user=User.query.get(uid)
+        user = User.query.get(uid)
     # 查询所有的留言内容
-    page=int(request.args.get('page',1))
-    boards=MessageBoard.query.order_by(-MessageBoard.mdatetime).paginate(page=page,per_page=5)
+    page = int(request.args.get('page', 1))
+    boards = MessageBoard.query.order_by(
+        -MessageBoard.mdatetime).paginate(page=page, per_page=5)
     # 判断请求方式
-    if request.method=='POST':
-        content=request.form.get('board')
-        print('content是:',content)
+    if request.method == 'POST':
+        content = request.form.get('board')
+        print('content是:', content)
         # 添加留言
-        msg_board=MessageBoard()
-        msg_board.content=content
+        msg_board = MessageBoard()
+        msg_board.content = content
         if uid:
-            msg_board.user_id=uid
+            msg_board.user_id = uid
         db.session.add(msg_board)
         db.session.commit()
         return redirect(url_for('user.show_board'))
-    return render_template('user/board.html',user=user,boards=boards)
-    
-       
+    return render_template('user/board.html', user=user, boards=boards)
+
  # 删除留言
+
+
+# 留言板删除功能
 @user_bp.route('/board_del')
 def delete_board():
-    bid=request.args.get('bid')
+    bid = request.args.get('bid')
     if bid:
-        msgboard=MessageBoard.query.get(bid)
+        msgboard = MessageBoard.query.get(bid)
         db.session.delete(msgboard)
         db.session.commit()
         return redirect(url_for('user.user_center'))
 
 
-
-
 # 删除失败500页面
 @user_bp.route('/error')
 def test_error():
-    referer=request.headers.get('Referer',None)
-    return render_template('500.html',err_msg='删除出现错误啦！',referer=referer)
-    
-    
-    
+    referer = request.headers.get('Referer', None)
+    return render_template('500.html', err_msg='删除出现错误啦！', referer=referer)
+
+
 # 退出
 @user_bp.route('/logout', methods=['GET', 'POST'])
 def logout():

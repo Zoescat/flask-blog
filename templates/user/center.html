@@ -141,7 +141,7 @@
         </div>
         <div class="right1" style="padding-top: 30px;">
             {% if user.messages %}
-                <table class="table table-hover">
+                <table class="table">
                     <tr>
                         <th>序号</th>
                         <th>留言</th>
@@ -149,7 +149,7 @@
                         <th>操作</th>
                     </tr>
                     {% for message in user.messages %}
-                        <tr  {% if loop.index%2==0 %}class='info' {% endif %}>
+                        <tr>
                             <td>{{loop.index}}</td>
                             <td>{{message.content}}</td>
                             <td>{{message.mdatetime}}</td>

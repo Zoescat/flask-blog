@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, g, jso
 from apps.user.models import User
 from apps.article.models import Article, Article_type, Comment
 from exts import db
+from apps.utils.util import user_type
 import flask
 
 
@@ -91,3 +92,23 @@ def article_comment():
         return redirect(url_for('article.article_detail')+"?aid="+article_id)
 
     return redirect(url_for('index.index'))
+
+
+# 文章分类检索
+@article_bp.route('type_search')
+def type_search():
+    # 获取用户和文章类型给导航使用
+    user,types=user_type()
+    # tid的获取
+    tid=request.args.get('tid',1)
+    page=int(request.args.get('page',1))
+    # pagination对象
+    articles=Article.query.filter(Article.type_id==tid).pagination(page=page,per_page=5)
+    params={
+        'user': user,
+        'types':types,
+        'articles':articles,
+        'tid':tid,
+    }
+    
+    return render_template('article/article_type.html',**params)
