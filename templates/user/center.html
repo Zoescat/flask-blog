@@ -148,8 +148,8 @@
                         <th>时间</th>
                         <th>操作</th>
                     </tr>
-                    {% for message in messages %}
-                        <tr class="warning">
+                    {% for message in user.messages %}
+                        <tr  {% if loop.index%2==0 %}class='info' {% endif %}>
                             <td>{{loop.index}}</td>
                             <td>{{message.content}}</td>
                             <td>{{message.mdatetime}}</td>
