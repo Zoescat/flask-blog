@@ -5,7 +5,7 @@ build_image:
   # stage: build
   script:
     - docker build . -t flaskblog
-    - docker run -it --rm -p 5000:5000 flaskblog
+    - docker run -itd --rm -p 5000:5000 flaskblog
   only:
     # 只在主分支执行此任务
     - main
