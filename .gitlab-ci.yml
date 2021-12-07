@@ -1,0 +1,18 @@
+before_script:
+  - docker info
+
+build_image:
+  # stage: build
+  script:
+    - docker build . -t flaskblog
+    - docker run -itd --rm -p 5000:5000 flaskblog
+  only:
+    # 只在主分支执行此任务
+    - main
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - docker run -it --rm -p 5000:5000 flaskblog
+#   only:
+#     - main
