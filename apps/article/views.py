@@ -103,7 +103,7 @@ def type_search():
     tid=request.args.get('tid',1)
     page=int(request.args.get('page',1))
     # pagination对象
-    articles=Article.query.filter(Article.type_id==tid).pagination(page=page,per_page=5)
+    articles=Article.query.filter(Article.type_id==tid).paginate(page=page,per_page=5)
     params={
         'user': user,
         'types':types,

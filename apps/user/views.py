@@ -23,7 +23,8 @@ required_login_list = ['/user/center',
                        '/user/upload_photo',
                        '/article/add_comment',
                        '/user/about_me',
-                       '/user/showabout'
+                       '/user/showabout',
+                       '/user/photo_del'
                        ]
 
 

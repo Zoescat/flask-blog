@@ -2,7 +2,7 @@
 # flake8: noqa
 import random
 
-from sqlalchemy.orm import session
+from flask import session
 from apps.article.models import Article, Article_type
 from apps.user.models import User
 from qiniu import Auth, put_file, etag,put_data,BucketManager
@@ -60,6 +60,7 @@ def delete_qiniu(filename):
 
 # 文章分类
 def user_type():
+    # 获取文章分类
     types=Article_type.query.all()
     # 登录用户
     user=None
